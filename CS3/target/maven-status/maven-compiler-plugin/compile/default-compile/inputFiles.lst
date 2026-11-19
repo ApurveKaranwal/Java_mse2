@@ -1,0 +1,13 @@
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\controller\StudentController.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\dto\ApiResponse.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\dto\MeritStudentDTO.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\dto\ScoreSkillsUpdateDTO.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\dto\StudentRequestDTO.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\entity\Student.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\exception\BadRequestException.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\exception\GlobalExceptionHandler.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\exception\ResourceNotFoundException.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\repository\StudentRepository.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\service\StudentService.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\service\StudentServiceImpl.java
+C:\Users\Apurve\Desktop\java\m3\src\main\java\com\example\studentsystem\StudentSkillApplication.java

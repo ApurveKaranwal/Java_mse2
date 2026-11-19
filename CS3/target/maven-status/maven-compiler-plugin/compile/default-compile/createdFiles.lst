@@ -1,0 +1,13 @@
+com\example\studentsystem\controller\StudentController.class
+com\example\studentsystem\exception\GlobalExceptionHandler.class
+com\example\studentsystem\repository\StudentRepository.class
+com\example\studentsystem\service\StudentServiceImpl.class
+com\example\studentsystem\dto\ScoreSkillsUpdateDTO.class
+com\example\studentsystem\service\StudentService.class
+com\example\studentsystem\dto\ApiResponse.class
+com\example\studentsystem\entity\Student.class
+com\example\studentsystem\exception\BadRequestException.class
+com\example\studentsystem\dto\StudentRequestDTO.class
+com\example\studentsystem\StudentSkillApplication.class
+com\example\studentsystem\exception\ResourceNotFoundException.class
+com\example\studentsystem\dto\MeritStudentDTO.class

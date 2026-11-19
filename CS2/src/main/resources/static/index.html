@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile & Skill Development Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+        body {
+            background-color: #f4f7fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .header-section {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 30px 0 25px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: white;
+            border-bottom: 1px solid #edf2f9;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        .nav-pills .nav-link {
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 500;
+            color: #495057;
+            margin-right: 5px;
+            transition: all 0.2s ease;
+        }
+        .nav-pills .nav-link.active {
+            background: #2a5298;
+            color: white;
+            box-shadow: 0 4px 8px rgba(42, 82, 152, 0.3);
+        }
+        .badge-cat-excellent { background-color: #198754; color: white; }
+        .badge-cat-good { background-color: #0d6efd; color: white; }
+        .badge-cat-satisfactory { background-color: #fd7e14; color: white; }
+        .badge-cat-needs-improvement { background-color: #dc3545; color: white; }
+        .skill-badge {
+            background-color: #e9ecef;
+            color: #495057;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 2px;
+            font-size: 0.82rem;
+            border: 1px solid #ced4da;
+        }
+        .score-pill {
+            font-size: 0.8rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin: 2px;
+            display: inline-block;
+        }
+        .rank-badge {
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .rank-1 { background-color: #ffd700; color: #333; }
+        .rank-2 { background-color: #c0c0c0; color: #333; }
+        .rank-3 { background-color: #cd7f32; color: white; }
+        .rank-other { background-color: #e9ecef; color: #495057; }
+        .requirement-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 7px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.25);
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="header-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h2 class="mb-1 fw-bold"><i class="fa-solid fa-graduation-cap me-2"></i>Student Profile & Skill Development System</h2>
+                    <p class="mb-0 text-white-50">Java Spring Boot &bull; MySQL Database &bull; Java Collections Framework</p>
+                </div>
+                <button class="btn btn-light fw-semibold" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                    <i class="fa-solid fa-user-plus me-1 text-primary"></i> Add New Student
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mb-5">
+        <!-- Toast / Alerts -->
+        <div id="alertBox"></div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-pills mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="tab-all-btn" data-bs-toggle="pill" data-bs-target="#tab-all" onclick="loadAllStudents()">
+                    <i class="fa-solid fa-users me-1"></i> All Students (Req 1, 2, 3)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-search-btn" data-bs-toggle="pill" data-bs-target="#tab-search">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i> Search (Req 4)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-merit-btn" data-bs-toggle="pill" data-bs-target="#tab-merit" onclick="loadMeritList()">
+                    <i class="fa-solid fa-trophy me-1"></i> Merit List (Req 5)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-skills-btn" data-bs-toggle="pill" data-bs-target="#tab-skills" onclick="loadSkillGroups()">
+                    <i class="fa-solid fa-code me-1"></i> Same Skills (Req 6)
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-special-btn" data-bs-toggle="pill" data-bs-target="#tab-special" onclick="loadSpecialRequirement()">
+                    <i class="fa-solid fa-triangle-exclamation me-1 text-danger"></i> Programming Needs Improvement (Req 7)
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="tabContent">
+
+            <!-- TAB 1: ALL STUDENTS (Req 1, 2, 3) -->
+            <div class="tab-pane fade show active" id="tab-all" role="tabpanel">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="fs-5">Student Records & Academic Performance</span>
+                            <small class="text-muted d-block">Covers: Average calculation, Category assignment (Excellent, Good, Satisfactory, Needs Improvement), and Stronger Subject</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadAllStudents()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Name & Email</th>
+                                        <th>Course</th>
+                                        <th>Technical Skills</th>
+                                        <th>Subject Scores</th>
+                                        <th>Average Score (Req 1)</th>
+                                        <th>Category (Req 2)</th>
+                                        <th>Stronger Subject (Req 3)</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <tr><td colspan="9" class="text-center py-4">Loading student profiles...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: SEARCH (Req 4) -->
+            <div class="tab-pane fade" id="tab-search" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fa-solid fa-magnifying-glass me-2 text-primary"></i>Search Students by ID, Email, or Course</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Search by Student ID</label>
+                                <div class="input-group">
+                                    <input type="text" id="searchIdInput" class="form-control" placeholder="e.g. STU101">
+                                    <button class="btn btn-primary" onclick="searchById()"><i class="fa-solid fa-search"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Search by Email</label>
+                                <div class="input-group">
+                                    <input type="email" id="searchEmailInput" class="form-control" placeholder="e.g. aarav.sharma@example.com">
+                                    <button class="btn btn-primary" onclick="searchByEmail()"><i class="fa-solid fa-search"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Search by Course</label>
+                                <div class="input-group">
+                                    <input type="text" id="searchCourseInput" class="form-control" placeholder="e.g. Computer Science">
+                                    <button class="btn btn-primary" onclick="searchByCourse()"><i class="fa-solid fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Course</th>
+                                        <th>Average</th>
+                                        <th>Category</th>
+                                        <th>Stronger Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="searchResultsBody">
+                                    <tr><td colspan="7" class="text-center text-muted py-3">Enter an ID, Email, or Course above and click Search.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MERIT LIST (Req 5) -->
+            <div class="tab-pane fade" id="tab-merit" role="tabpanel">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0"><i class="fa-solid fa-trophy text-warning me-2"></i>Merit List (Sorted by Average Score in Descending Order)</h5>
+                            <small class="text-muted">Generated using Java Collections & Stream sorting</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadMeritList()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 80px;" class="text-center">Rank</th>
+                                        <th>Student ID</th>
+                                        <th>Name</th>
+                                        <th>Course</th>
+                                        <th>Average Score</th>
+                                        <th>Performance Category</th>
+                                        <th>Stronger Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="meritListBody">
+                                    <tr><td colspan="7" class="text-center py-4">Loading merit list...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: SAME TECHNICAL SKILLS (Req 6) -->
+            <div class="tab-pane fade" id="tab-skills" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fa-solid fa-tags me-2"></i>Students Grouped by Individual Technical Skill</h5>
+                            </div>
+                            <div class="card-body" id="skillGroupContainer">
+                                <p class="text-muted">Loading skill groups...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-info text-dark">
+                                <h5 class="mb-0"><i class="fa-solid fa-layer-group me-2"></i>Students Sharing Identical Skill Sets</h5>
+                            </div>
+                            <div class="card-body" id="identicalSkillSetContainer">
+                                <p class="text-muted">Loading identical skill groups...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: SPECIAL REQUIREMENT 7 -->
+            <div class="tab-pane fade" id="tab-special" role="tabpanel">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning bg-opacity-10 border-warning">
+                        <h5 class="mb-1 text-dark">
+                            <i class="fa-solid fa-filter text-warning me-2"></i>
+                            Requirement 7: Programming Needs Improvement (&lt; 50) with Mathematics &gt;= 75
+                        </h5>
+                        <p class="text-muted mb-0 small">
+                            Identifies students who possess strong mathematical foundation (&ge; 75%) but require targeted mentoring in programming (&lt; 50%).
+                        </p>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Student ID</th>
+                                        <th>Name</th>
+                                        <th>Course</th>
+                                        <th>Mathematics Score (&ge; 75)</th>
+                                        <th>Programming Score (&lt; 50)</th>
+                                        <th>Average Score</th>
+                                        <th>Category</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="specialReqBody">
+                                    <tr><td colspan="7" class="text-center py-4">Loading filtered students...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW STUDENT (Req 8 Validation) -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addStudentModalLabel"><i class="fa-solid fa-user-plus me-2"></i>Register New Student Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addStudentForm" onsubmit="handleCreateStudent(event)">
+                    <div class="modal-body">
+                        <div id="modalAlertBox"></div>
+
+                        <h6 class="fw-bold text-primary mb-3">1. Personal Information</h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Student ID <span class="text-danger">*</span> (Unique)</label>
+                                <input type="text" class="form-control" id="formStudentId" placeholder="e.g. STU107" required>
+                                <div class="form-text">Duplicate IDs will be rejected (Req 8).</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="formName" placeholder="e.g. Priya Nair" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email <span class="text-danger">*</span> (Unique)</label>
+                                <input type="email" class="form-control" id="formEmail" placeholder="e.g. priya.nair@example.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Course <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="formCourse" placeholder="e.g. Computer Science" required>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-primary mb-3">2. Technical Skill Interests</h6>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Skills (Comma-separated)</label>
+                            <input type="text" class="form-control" id="formSkills" placeholder="e.g. Java, Python, SQL, Spring Boot">
+                            <div class="form-text">Stors skills in a Java Set to eliminate duplicate entries.</div>
+                        </div>
+
+                        <h6 class="fw-bold text-primary mb-3">3. Academic Scores (Must be between 0 and 100)</h6>
+                        <div class="row g-3 mb-2">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Mathematics Score</label>
+                                <input type="number" step="0.1" min="0" max="100" class="form-control" id="scoreMath" placeholder="0 - 100" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Programming Score</label>
+                                <input type="number" step="0.1" min="0" max="100" class="form-control" id="scoreProg" placeholder="0 - 100" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Science Score</label>
+                                <input type="number" step="0.1" min="0" max="100" class="form-control" id="scoreSci" placeholder="0 - 100" required>
+                            </div>
+                        </div>
+                        <div class="form-text text-muted">Values &lt; 0 or &gt; 100 are strictly rejected by the backend validator (Req 8).</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save me-1"></i> Save Student Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const API_BASE = '/api/students';
+
+        // Load all students on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllStudents();
+        });
+
+        function getCategoryBadge(category) {
+            switch(category) {
+                case 'Excellent':
+                    return '<span class="badge badge-cat-excellent"><i class="fa-solid fa-star me-1"></i>Excellent (&ge;85)</span>';
+                case 'Good':
+                    return '<span class="badge badge-cat-good"><i class="fa-solid fa-check me-1"></i>Good (70-84.99)</span>';
+                case 'Satisfactory':
+                    return '<span class="badge badge-cat-satisfactory"><i class="fa-solid fa-minus me-1"></i>Satisfactory (50-69.99)</span>';
+                default:
+                    return '<span class="badge badge-cat-needs-improvement"><i class="fa-solid fa-exclamation me-1"></i>Needs Improvement (&lt;50)</span>';
+            }
+        }
+
+        async function loadAllStudents() {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">Loading student records...</td></tr>';
+            try {
+                const res = await fetch(API_BASE);
+                const students = await res.json();
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">No student profiles found. Add one above!</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = students.map(s => {
+                    const skillsHtml = s.skills.length > 0 ?
+                        s.skills.map(sk => `<span class="skill-badge">${sk}</span>`).join(' ') :
+                        '<span class="text-muted small">None</span>';
+
+                    const scoresHtml = Object.entries(s.scores || {}).map(([sub, val]) =>
+                        `<span class="score-pill"><strong>${sub}:</strong> ${val}</span>`
+                    ).join(' ');
+
+                    return `
+                        <tr>
+                            <td class="fw-bold text-primary">${s.studentId}</td>
+                            <td>
+                                <div><strong>${s.name}</strong></div>
+                                <div class="text-muted small">${s.email}</div>
+                            </td>
+                            <td>${s.course}</td>
+                            <td>${skillsHtml}</td>
+                            <td>${scoresHtml || '<span class="text-muted small">None</span>'}</td>
+                            <td><strong class="fs-6">${s.averageScore.toFixed(2)}</strong></td>
+                            <td>${getCategoryBadge(s.performanceCategory)}</td>
+                            <td><span class="badge bg-secondary">${s.strongerSubject}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger" title="Delete Student" onclick="deleteStudent(${s.id})">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Error loading records: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function loadMeritList() {
+            const tbody = document.getElementById('meritListBody');
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Loading merit list...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE}/merit-list`);
+                const list = await res.json();
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">No records found.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = list.map(m => {
+                    let rankClass = 'rank-other';
+                    if (m.rank === 1) rankClass = 'rank-1';
+                    else if (m.rank === 2) rankClass = 'rank-2';
+                    else if (m.rank === 3) rankClass = 'rank-3';
+
+                    return `
+                        <tr>
+                            <td class="text-center"><span class="rank-badge ${rankClass}">${m.rank}</span></td>
+                            <td class="fw-bold text-primary">${m.studentId}</td>
+                            <td><strong>${m.name}</strong></td>
+                            <td>${m.course}</td>
+                            <td><span class="fw-bold text-success fs-6">${m.averageScore.toFixed(2)}</span></td>
+                            <td>${getCategoryBadge(m.performanceCategory)}</td>
+                            <td><span class="badge bg-secondary">${m.strongerSubject}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function loadSkillGroups() {
+            const indContainer = document.getElementById('skillGroupContainer');
+            const setContainer = document.getElementById('identicalSkillSetContainer');
+            indContainer.innerHTML = '<p class="text-muted">Loading individual skill groups...</p>';
+            setContainer.innerHTML = '<p class="text-muted">Loading identical skill groups...</p>';
+
+            try {
+                // 1. Individual Skills
+                const res1 = await fetch(`${API_BASE}/same-skills`);
+                const skillsMap = await res1.json();
+                let html1 = '';
+                for (const [skill, students] of Object.entries(skillsMap)) {
+                    html1 += `
+                        <div class="mb-3 p-3 bg-light rounded border">
+                            <h6 class="fw-bold text-primary mb-2">
+                                <i class="fa-solid fa-code me-1"></i> Skill: <span class="badge bg-primary fs-6">${skill}</span>
+                                <span class="badge bg-secondary ms-2">${students.length} Student${students.length > 1 ? 's' : ''}</span>
+                            </h6>
+                            <ul class="list-unstyled mb-0 ps-2">
+                                ${students.map(s => `<li>&bull; <strong>${s.name}</strong> (${s.studentId}) - <em>${s.course}</em></li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                indContainer.innerHTML = html1 || '<p class="text-muted">No skills recorded.</p>';
+
+                // 2. Identical Skill Sets
+                const res2 = await fetch(`${API_BASE}/same-skill-sets`);
+                const setsMap = await res2.json();
+                let html2 = '';
+                for (const [skillsJoined, students] of Object.entries(setsMap)) {
+                    html2 += `
+                        <div class="mb-3 p-3 bg-light rounded border">
+                            <h6 class="fw-bold text-dark mb-2">
+                                <i class="fa-solid fa-layer-group me-1"></i> Skill Set: <code>${skillsJoined}</code>
+                                <span class="badge ${students.length > 1 ? 'bg-success' : 'bg-secondary'} ms-2">${students.length} Student${students.length > 1 ? 's Share This' : ''}</span>
+                            </h6>
+                            <ul class="list-unstyled mb-0 ps-2">
+                                ${students.map(s => `<li>&bull; <strong>${s.name}</strong> (${s.studentId}) - <em>${s.course}</em></li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                setContainer.innerHTML = html2 || '<p class="text-muted">No skill sets recorded.</p>';
+            } catch (err) {
+                indContainer.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+                setContainer.innerHTML = `<p class="text-danger">Error: ${err.message}</p>`;
+            }
+        }
+
+        async function loadSpecialRequirement() {
+            const tbody = document.getElementById('specialReqBody');
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">Checking requirement conditions...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE}/programming-improvement-high-math`);
+                const students = await res.json();
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted">No students currently match this criteria (Programming &lt; 50 and Math &ge; 75).</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = students.map(s => {
+                    // Extract scores
+                    const math = s.scores['Mathematics'] || s.scores['Math'] || 'N/A';
+                    const prog = s.scores['Programming'] || 'N/A';
+
+                    return `
+                        <tr>
+                            <td class="fw-bold text-primary">${s.studentId}</td>
+                            <td><strong>${s.name}</strong></td>
+                            <td>${s.course}</td>
+                            <td><span class="badge bg-success fs-6">${math} / 100</span></td>
+                            <td><span class="badge bg-danger fs-6">${prog} / 100 (Needs Improvement)</span></td>
+                            <td><strong>${s.averageScore.toFixed(2)}</strong></td>
+                            <td>${getCategoryBadge(s.performanceCategory)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function searchById() {
+            const id = document.getElementById('searchIdInput').value.trim();
+            if (!id) return;
+            const tbody = document.getElementById('searchResultsBody');
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">Searching...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE}/student-id/${encodeURIComponent(id)}`);
+                if (!res.ok) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-3">No student found with ID: ' + id + '</td></tr>';
+                    return;
+                }
+                const s = await res.json();
+                renderSearchResults([s]);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">Search error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function searchByEmail() {
+            const email = document.getElementById('searchEmailInput').value.trim();
+            if (!email) return;
+            const tbody = document.getElementById('searchResultsBody');
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">Searching...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE}/search/email?email=${encodeURIComponent(email)}`);
+                if (!res.ok) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-3">No student found with email: ' + email + '</td></tr>';
+                    return;
+                }
+                const s = await res.json();
+                renderSearchResults([s]);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">Search error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function searchByCourse() {
+            const course = document.getElementById('searchCourseInput').value.trim();
+            if (!course) return;
+            const tbody = document.getElementById('searchResultsBody');
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center py-3 text-muted">Searching...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE}/search/course?course=${encodeURIComponent(course)}`);
+                const list = await res.json();
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No students found enrolled in course: ' + course + '</td></tr>';
+                    return;
+                }
+                renderSearchResults(list);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger py-3">Search error: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderSearchResults(students) {
+            const tbody = document.getElementById('searchResultsBody');
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td class="fw-bold text-primary">${s.studentId}</td>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.email}</td>
+                    <td>${s.course}</td>
+                    <td><strong>${s.averageScore.toFixed(2)}</strong></td>
+                    <td>${getCategoryBadge(s.performanceCategory)}</td>
+                    <td><span class="badge bg-secondary">${s.strongerSubject}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function handleCreateStudent(event) {
+            event.preventDefault();
+            const alertBox = document.getElementById('modalAlertBox');
+            alertBox.innerHTML = '';
+
+            const studentId = document.getElementById('formStudentId').value.trim();
+            const name = document.getElementById('formName').value.trim();
+            const email = document.getElementById('formEmail').value.trim();
+            const course = document.getElementById('formCourse').value.trim();
+            const skillsRaw = document.getElementById('formSkills').value.trim();
+
+            const math = parseFloat(document.getElementById('scoreMath').value);
+            const prog = parseFloat(document.getElementById('scoreProg').value);
+            const sci = parseFloat(document.getElementById('scoreSci').value);
+
+            // Client-side quick check
+            if (math < 0 || math > 100 || prog < 0 || prog > 100 || sci < 0 || sci > 100) {
+                alertBox.innerHTML = '<div class="alert alert-danger py-2">Score must be between 0 and 100 (Requirement 8).</div>';
+                return;
+            }
+
+            const skills = skillsRaw ? skillsRaw.split(',').map(s => s.trim()).filter(s => s.length > 0) : [];
+            const scores = {
+                "Mathematics": math,
+                "Programming": prog,
+                "Science": sci
+            };
+
+            const payload = { studentId, name, email, course, skills, scores };
+
+            try {
+                const res = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const error = await res.json();
+                    alertBox.innerHTML = `<div class="alert alert-danger py-2">${error.message || 'Error creating student.'}</div>`;
+                    return;
+                }
+
+                // Success
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
+                modal.hide();
+                document.getElementById('addStudentForm').reset();
+                showAlert(`Student ${studentId} (${name}) registered successfully!`, 'success');
+                loadAllStudents();
+            } catch (err) {
+                alertBox.innerHTML = `<div class="alert alert-danger py-2">Network Error: ${err.message}</div>`;
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (!confirm('Are you sure you want to delete this student profile?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    showAlert('Student deleted successfully.', 'info');
+                    loadAllStudents();
+                } else {
+                    showAlert('Failed to delete student.', 'danger');
+                }
+            } catch (err) {
+                showAlert('Error deleting student: ' + err.message, 'danger');
+            }
+        }
+
+        function showAlert(msg, type = 'success') {
+            const box = document.getElementById('alertBox');
+            box.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> ${msg}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            setTimeout(() => { box.innerHTML = ''; }, 4000);
+        }
+    </script>
+</body>
+</html>
